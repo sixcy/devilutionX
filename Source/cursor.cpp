@@ -142,7 +142,10 @@ void CheckTown()
 			    || cursmx == missile[mx]._mix && cursmy == missile[mx]._miy) {
 				trigflag = TRUE;
 				ClearPanel();
-				strcpy(infostr, "Town Portal");
+        if (gbIronman == TRUE)
+          strcpy(infostr, "Ironman: TP forbidden!");
+        else
+          strcpy(infostr, "Town Portal");
 				sprintf(tempstr, "from %s", plr[missile[mx]._misource]._pName);
 				AddPanelString(tempstr, TRUE);
 				cursmx = missile[mx]._mix;

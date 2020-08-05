@@ -712,8 +712,6 @@ void CheckTriggers()
 			StartNewLvl(myplr, trigs[i]._tmsg, ReturnLvl);
 			break;
 		case WM_DIABTOWNWARP:
-      if (gbIronman == TRUE)
-        return;
 			if (gbMaxPlayers != 1) {
 				abort = FALSE;
 
