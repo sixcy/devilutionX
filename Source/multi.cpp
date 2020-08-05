@@ -32,6 +32,7 @@ DWORD sgdwGameLoops;
  * represents a single player game and 4 represents a multi player game.
  */
 BYTE gbMaxPlayers;
+BOOL gbIronman;
 BOOLEAN sgbTimeout;
 char szPlayerName[128];
 BYTE gbDeltaSender;

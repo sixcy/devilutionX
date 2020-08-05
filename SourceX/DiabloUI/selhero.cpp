@@ -11,6 +11,7 @@
 #include "DiabloUI/scrollbar.h"
 #include "DiabloUI/selyesno.h"
 #include "DiabloUI/selok.h"
+#include "DiabloUI/text.h"
 
 namespace dvl {
 
@@ -395,6 +396,89 @@ BOOL UiSelHeroDialog(
 	return true;
 }
 
+typedef enum ironman_select { ISEL_REGULAR, ISEL_SP_IRONMAN } ironman_select_e;
+
+constexpr UiArtTextButton SELIRONMAN_OK = UiArtTextButton("OK", &UiFocusNavigationSelect, { PANEL_LEFT + 299, 427, 140, 35 }, UIS_CENTER | UIS_VCENTER | UIS_BIG | UIS_GOLD);
+constexpr UiArtTextButton SELIRONMAN_CANCEL = UiArtTextButton("CANCEL", &UiFocusNavigationEsc, { PANEL_LEFT + 449, 427, 140, 35 }, UIS_CENTER | UIS_VCENTER | UIS_BIG | UIS_GOLD);
+char selironman_Label[32];
+char selironman_Description[256];
+UiArtText SELIRONMAN_DESCRIPTION(selironman_Description, { PANEL_LEFT + 35, 256, 205, 192 });
+bool selironman_endMenu;
+
+UiListItem SELIRONMAN_DIALOG_ITEMS[] = {
+	{ "No Challenge", ISEL_REGULAR },
+	{ "SP Ironman", ISEL_SP_IRONMAN }
+};
+UiItem SELIRONMAN_DIALOG[] = {
+	MAINMENU_BACKGROUND,
+	MAINMENU_LOGO,
+	UiArtText(title, { PANEL_LEFT + 24, 161, 590, 35 }, UIS_CENTER | UIS_BIG),
+	UiArtText(selironman_Label, { PANEL_LEFT + 34, 211, 205, 33 }, UIS_CENTER | UIS_BIG), // DIFF
+	SELIRONMAN_DESCRIPTION,
+	UiArtText("Select Challenge", { PANEL_LEFT + 299, 211, 295, 35 }, UIS_CENTER | UIS_BIG),
+	UiList(SELIRONMAN_DIALOG_ITEMS, PANEL_LEFT + 300, 282, 295, 26, UIS_CENTER | UIS_MED | UIS_GOLD),
+	SELIRONMAN_OK,
+	SELIRONMAN_CANCEL,
+};
+
+void selironman_Free()
+{
+	ArtBackground.Unload();
+}
+
+void selIronmanFocus(int val){
+  switch (val) {
+    case ISEL_REGULAR:
+      strcpy(selironman_Label, "Normal");
+      strcpy(selironman_Description,
+          "No Ironman\n\nThe basic Diablo experience"
+          ", without any restriction.");
+      break;
+    case ISEL_SP_IRONMAN:
+      strcpy(selironman_Label, "Single Ironman");
+      strcpy(selironman_Description, 
+          "SP Ironman Challenge\n\n"
+          "1) You cannot backtrack \nupstairs.\n"
+          "2) Death is permanent\n"
+          "3) All monsters must be \nkilled\n"
+          "4) On dlvl16, Diablo must be killed last\n"
+          "\n"
+          "Single player dungeon layout");
+    break;
+  }
+  WordWrapArtStr(selironman_Description, SELIRONMAN_DESCRIPTION.rect.w);
+}
+
+void selIronmanSelect(int val){
+  switch(val){
+    case ISEL_REGULAR:
+      gbIronman = FALSE;
+      break;
+    case ISEL_SP_IRONMAN:
+      gbIronman = TRUE;
+      break;
+  }
+  selironman_endMenu = true;
+}
+
+void selIronmanEsc(void){}
+
+void UiSelIronmanDialog(void){
+  strcpy(title, "Choose challenge");
+  UiInitList(0, 2-1,
+      selIronmanFocus, selIronmanSelect, selIronmanEsc,
+      SELIRONMAN_DIALOG, size(SELIRONMAN_DIALOG));
+	selironman_endMenu = false;
+  LoadBackgroundArt("ui_art\\selgame.pcx");
+  LoadScrollBar();
+	while (!selironman_endMenu) {
+		UiClearScreen();
+		UiPollAndRender();
+	}
+	selironman_Free();
+}
+
+
 BOOL UiSelHeroSingDialog(
     BOOL (*fninfo)(BOOL (*fninfofunc)(_uiheroinfo *)),
     BOOL (*fncreate)(_uiheroinfo *),
@@ -405,6 +489,7 @@ BOOL UiSelHeroSingDialog(
     int *difficulty)
 {
 	selhero_isMultiPlayer = false;
+  UiSelIronmanDialog(); // choosing Ironman or not
 	return UiSelHeroDialog(fninfo, fncreate, fnstats, fnremove, dlgresult, name);
 }
 
