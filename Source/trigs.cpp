@@ -319,16 +319,22 @@ BOOL ForceTownTrig()
 	return FALSE;
 }
 
+#define IM_NOGOINGUP_STR "Ironman\nGoing up is forbidden!"
+
 BOOL ForceL1Trig()
 {
 	int i, j;
 
 	for (i = 0; L1UpList[i] != -1; i++) {
 		if (dPiece[cursmx][cursmy] == L1UpList[i]) {
-			if (currlevel > 1)
-				sprintf(infostr, "Up to level %i", currlevel - 1);
-			else
-				strcpy(infostr, "Up to town");
+      if (gbIronman == TRUE)
+        strcpy(infostr, IM_NOGOINGUP_STR);
+      else {
+        if (currlevel > 1)
+          sprintf(infostr, "Up to level %i", currlevel - 1);
+        else
+          strcpy(infostr, "Up to town");
+      }
 			for (j = 0; j < numtrigs; j++) {
 				if (trigs[j]._tmsg == WM_DIABPREVLVL) {
 					cursmx = trigs[j]._tx;
@@ -366,7 +372,10 @@ BOOL ForceL2Trig()
 					dx = abs(trigs[j]._tx - cursmx);
 					dy = abs(trigs[j]._ty - cursmy);
 					if (dx < 4 && dy < 4) {
-						sprintf(infostr, "Up to level %i", currlevel - 1);
+            if (gbIronman == TRUE)
+              strcpy(infostr, IM_NOGOINGUP_STR);
+            else
+              sprintf(infostr, "Up to level %i", currlevel - 1);
 						cursmx = trigs[j]._tx;
 						cursmy = trigs[j]._ty;
 						return TRUE;
@@ -397,7 +406,10 @@ BOOL ForceL2Trig()
 						dx = abs(trigs[j]._tx - cursmx);
 						dy = abs(trigs[j]._ty - cursmy);
 						if (dx < 4 && dy < 4) {
-							strcpy(infostr, "Up to town");
+              if (gbIronman == TRUE)
+                strcpy(infostr, IM_NOGOINGUP_STR);
+              else
+                strcpy(infostr, "Up to town");
 							cursmx = trigs[j]._tx;
 							cursmy = trigs[j]._ty;
 							return TRUE;
@@ -417,7 +429,10 @@ BOOL ForceL3Trig()
 
 	for (i = 0; L3UpList[i] != -1; ++i) {
 		if (dPiece[cursmx][cursmy] == L3UpList[i]) {
-			sprintf(infostr, "Up to level %i", currlevel - 1);
+      if (gbIronman == TRUE)
+        strcpy(infostr, IM_NOGOINGUP_STR);
+      else
+        sprintf(infostr, "Up to level %i", currlevel - 1);
 			for (j = 0; j < numtrigs; j++) {
 				if (trigs[j]._tmsg == WM_DIABPREVLVL) {
 					cursmx = trigs[j]._tx;
@@ -451,7 +466,10 @@ BOOL ForceL3Trig()
 						dx = abs(trigs[j]._tx - cursmx);
 						dy = abs(trigs[j]._ty - cursmy);
 						if (dx < 4 && dy < 4) {
-							strcpy(infostr, "Up to town");
+              if (gbIronman == TRUE)
+                strcpy(infostr, IM_NOGOINGUP_STR);
+              else
+                strcpy(infostr, "Up to town");
 							cursmx = trigs[j]._tx;
 							cursmy = trigs[j]._ty;
 							return TRUE;
@@ -471,7 +489,10 @@ BOOL ForceL4Trig()
 
 	for (i = 0; L4UpList[i] != -1; ++i) {
 		if (dPiece[cursmx][cursmy] == L4UpList[i]) {
-			sprintf(infostr, "Up to level %i", currlevel - 1);
+      if (gbIronman == TRUE)
+        strcpy(infostr, IM_NOGOINGUP_STR);
+      else
+        sprintf(infostr, "Up to level %i", currlevel - 1);
 			for (j = 0; j < numtrigs; j++) {
 				if (trigs[j]._tmsg == WM_DIABPREVLVL) {
 					cursmx = trigs[j]._tx;
@@ -503,7 +524,10 @@ BOOL ForceL4Trig()
 						dx = abs(trigs[j]._tx - cursmx);
 						dy = abs(trigs[j]._ty - cursmy);
 						if (dx < 4 && dy < 4) {
-							strcpy(infostr, "Up to town");
+              if (gbIronman == TRUE)
+                strcpy(infostr, IM_NOGOINGUP_STR);
+              else
+                strcpy(infostr, "Up to town");
 							cursmx = trigs[j]._tx;
 							cursmy = trigs[j]._ty;
 							return TRUE;
@@ -678,6 +702,8 @@ void CheckTriggers()
 #endif
 			break;
 		case WM_DIABPREVLVL:
+      if (gbIronman == TRUE)
+        return;
 			if (pcurs >= CURSOR_FIRSTITEM && DropItemBeforeTrig())
 				return;
 			StartNewLvl(myplr, trigs[i]._tmsg, currlevel - 1);
@@ -686,6 +712,8 @@ void CheckTriggers()
 			StartNewLvl(myplr, trigs[i]._tmsg, ReturnLvl);
 			break;
 		case WM_DIABTOWNWARP:
+      if (gbIronman == TRUE)
+        return;
 			if (gbMaxPlayers != 1) {
 				abort = FALSE;
 
@@ -730,6 +758,8 @@ void CheckTriggers()
 			StartNewLvl(myplr, trigs[i]._tmsg, trigs[i]._tlvl);
 			break;
 		case WM_DIABTWARPUP:
+      if (gbIronman == TRUE)
+        return;
 			TWarpFrom = currlevel;
 			StartNewLvl(myplr, trigs[i]._tmsg, 0);
 			break;
