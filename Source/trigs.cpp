@@ -702,6 +702,7 @@ void CheckTriggers()
 #endif
 			break;
 		case WM_DIABPREVLVL:
+      /* Disabling going up for ironman */
       if (gbIronman == TRUE)
         return;
 			if (pcurs >= CURSOR_FIRSTITEM && DropItemBeforeTrig())
@@ -756,6 +757,7 @@ void CheckTriggers()
 			StartNewLvl(myplr, trigs[i]._tmsg, trigs[i]._tlvl);
 			break;
 		case WM_DIABTWARPUP:
+      /* Disabling going up for Ironman */
       if (gbIronman == TRUE)
         return;
 			TWarpFrom = currlevel;

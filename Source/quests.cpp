@@ -208,8 +208,7 @@ void CheckQuests()
       towner[t]._tMsgSaid = TRUE;
     }
 
-    // wow (mushroom)
-    // I'm not sure about that part.. might be clumsy
+    // Mushroom
     if (quests[Q_MUSHROOM]._qactive == QUEST_INIT &&
         PlrHasItem(p, IDI_FUNGALTM, &i) != NULL){
       t = GetActiveTowner(TOWN_WITCH);
