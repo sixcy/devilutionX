@@ -136,6 +136,8 @@ void CheckQuests()
 {
 #ifndef SPAWN
 	int i, rportx, rporty;
+  int myplr = 0; // Used for SP Ironman, 0 is the current player
+  int t; // SP Ironman, towner variable
 
 	if (QuestStatus(Q_BETRAYER) && gbMaxPlayers != 1 && quests[Q_BETRAYER]._qvar1 == 2) {
 		AddObject(OBJ_ALTBOY, 2 * setpc_x + 20, 2 * setpc_y + 22);
@@ -146,6 +148,21 @@ void CheckQuests()
 	if (gbMaxPlayers != 1) {
 		return;
 	}
+
+  // Ironman BETRAYER quest
+  // Copy pasted from Source/towners.cpp
+  if (gbIronman == TRUE && quests[Q_BETRAYER]._qactive == QUEST_INIT
+      && PlrHasItem(myplr, IDI_LAZSTAFF, &i) != NULL){
+    t = GetActiveTowner(TOWN_STORY);
+    RemoveInvItem(myplr, i);
+    quests[Q_BETRAYER]._qvar1 = 2;
+    towner[t]._tbtcnt = 150;
+    towner[t]._tVar1 = myplr;
+    InitQTextMsg(TEXT_VILE1);
+    towner[t]._tMsgSaid = TRUE;
+    quests[Q_BETRAYER]._qactive = QUEST_ACTIVE;
+    quests[Q_BETRAYER]._qlog = TRUE;
+  }
 
 	if (currlevel == quests[Q_BETRAYER]._qlevel
 	    && !setlevel
