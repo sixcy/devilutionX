@@ -136,7 +136,7 @@ void CheckQuests()
 {
 #ifndef SPAWN
 	int i, rportx, rporty;
-  int myplr = 0; // Used for SP Ironman, 0 is the current player
+  int p = 0; // Used for SP Ironman, 0 is the current player
   int t; // SP Ironman, towner variable
 
 	if (QuestStatus(Q_BETRAYER) && gbMaxPlayers != 1 && quests[Q_BETRAYER]._qvar1 == 2) {
@@ -149,20 +149,103 @@ void CheckQuests()
 		return;
 	}
 
-  // Ironman BETRAYER quest
+  // Ironman BETRAYER quest (and others)
   // Copy pasted from Source/towners.cpp
-  if (gbIronman == TRUE && quests[Q_BETRAYER]._qactive == QUEST_INIT
-      && PlrHasItem(myplr, IDI_LAZSTAFF, &i) != NULL){
-    t = GetActiveTowner(TOWN_STORY);
-    RemoveInvItem(myplr, i);
-    quests[Q_BETRAYER]._qvar1 = 2;
-    towner[t]._tbtcnt = 150;
-    towner[t]._tVar1 = myplr;
-    InitQTextMsg(TEXT_VILE1);
-    towner[t]._tMsgSaid = TRUE;
-    quests[Q_BETRAYER]._qactive = QUEST_ACTIVE;
-    quests[Q_BETRAYER]._qlog = TRUE;
+  if (gbIronman == TRUE){
+    // Open red portal on lazstaff retrieval
+    if (quests[Q_BETRAYER]._qactive == QUEST_INIT &&
+        PlrHasItem(p, IDI_LAZSTAFF, &i) != NULL){
+      t = GetActiveTowner(TOWN_STORY);
+      RemoveInvItem(p, i);
+      quests[Q_BETRAYER]._qvar1 = 2;
+      towner[t]._tbtcnt = 150;
+      towner[t]._tVar1 = p;
+      InitQTextMsg(TEXT_VILE1);
+      towner[t]._tMsgSaid = TRUE;
+      quests[Q_BETRAYER]._qactive = QUEST_ACTIVE;
+      quests[Q_BETRAYER]._qlog = TRUE;
+    }
+
+    // Get reward for ltbanner
+    if (quests[Q_LTBANNER]._qvar2 == 1 &&
+        PlrHasItem(p, IDI_BANNER, &i) != NULL) {
+      t = GetActiveTowner(TOWN_TAVERN);
+      quests[Q_LTBANNER]._qactive = QUEST_DONE;
+      quests[Q_LTBANNER]._qvar1 = 3;
+      RemoveInvItem(p, i);
+      CreateItem(UITEM_HARCREST, plr[p]._px, plr[p]._py + 1);
+      towner[t]._tbtcnt = 150;
+      towner[t]._tVar1 = p;
+      InitQTextMsg(TEXT_BANNER3);
+      towner[t]._tMsgSaid = TRUE;
+    }
+
+    // Muh Magic Rock
+    if (PlrHasItem(p, IDI_ROCK, &i) != NULL) {
+      t = GetActiveTowner(TOWN_SMITH);
+      quests[Q_ROCK]._qactive = QUEST_DONE;
+      quests[Q_ROCK]._qvar2 = 2;
+      quests[Q_ROCK]._qvar1 = 2;
+      RemoveInvItem(p, i);
+      CreateItem(UITEM_INFRARING, plr[p]._px, plr[p]._py + 1);
+      towner[t]._tbtcnt = 150;
+      towner[t]._tVar1 = p;
+      InitQTextMsg(TEXT_INFRA7);
+      towner[t]._tMsgSaid = TRUE;
+    }
+
+    // Anvil
+    if (PlrHasItem(p, IDI_ANVIL, &i) != NULL) {
+      quests[Q_ANVIL]._qactive = QUEST_DONE;
+      quests[Q_ANVIL]._qvar2 = 2;
+      quests[Q_ANVIL]._qvar1 = 2;
+      RemoveInvItem(p, i);
+      CreateItem(UITEM_GRISWOLD, plr[p]._px, plr[p]._py + 1);
+      towner[t]._tbtcnt = 150;
+      towner[t]._tVar1 = p;
+      InitQTextMsg(TEXT_ANVIL7);
+      towner[t]._tMsgSaid = TRUE;
+    }
+
+    // wow (mushroom)
+    // I'm not sure about that part.. might be clumsy
+    if (quests[Q_MUSHROOM]._qactive == QUEST_INIT &&
+        PlrHasItem(p, IDI_FUNGALTM, &i) != NULL){
+      t = GetActiveTowner(TOWN_WITCH);
+      RemoveInvItem(p, i);
+      quests[Q_MUSHROOM]._qlog = TRUE;
+      quests[Q_MUSHROOM]._qvar1 = QS_TOMEGIVEN;
+      quests[Q_MUSHROOM]._qactive = QUEST_ACTIVE;
+      CreateItem(IDI_SPECELIX, plr[p]._px, plr[p]._py + 1);
+      towner[t]._tbtcnt = 150;
+      towner[t]._tVar1 = p;
+      InitQTextMsg(TEXT_MUSH12);
+      towner[t]._tMsgSaid = TRUE;
+    }
+
+    // That part isn't efficient at all. Hopefully it
+    // will be ok (game keeps checking for whether
+    // IDI_SPECELIX is in the inventory)
+    if (quests[Q_MUSHROOM]._qactive == QUEST_ACTIVE){
+      ItemStruct *Item = PlrHasItem(p, IDI_SPECELIX, &i);
+      if (Item != NULL){
+        AllItemsList[Item->IDidx].iUsable = TRUE;
+        quests[Q_MUSHROOM]._qactive = QUEST_DONE;
+      }
+    }
+
+    if (quests[Q_PWATER]._qactive == QUEST_DONE &&
+        quests[Q_PWATER]._qvar1 != 2) {
+      t = GetActiveTowner(TOWN_HEALER);
+      quests[Q_PWATER]._qvar1 = 2;
+      towner[t]._tbtcnt = 150;
+      towner[t]._tVar1 = p;
+      InitQTextMsg(TEXT_POISON5);
+      CreateItem(UITEM_TRING, plr[p]._px, plr[p]._py + 1);
+      towner[t]._tMsgSaid = TRUE;
+    }
   }
+
 
 	if (currlevel == quests[Q_BETRAYER]._qlevel
 	    && !setlevel
