@@ -3062,7 +3062,7 @@ void MI_Town(int i)
 	for (p = 0; p < MAX_PLRS; p++) {
 		if (plr[p].plractive && currlevel == plr[p].plrlevel && !plr[p]._pLvlChanging && plr[p]._pmode == PM_STAND && plr[p]._px == missile[i]._mix && plr[p]._py == missile[i]._miy) {
 			ClrPlrPath(p);
-			if (p == myplr && gbIronman != TRUE) {
+			if (p == myplr && (gbIronman != TRUE || missile[i]._mimfnum != MIS_RPORTAL)) {
 				NetSendCmdParam1(TRUE, CMD_WARP, missile[i]._misource);
 				plr[p]._pmode = PM_NEWLVL;
 			}
