@@ -216,7 +216,7 @@ void CheckQuests()
       quests[Q_MUSHROOM]._qlog = TRUE;
       quests[Q_MUSHROOM]._qvar1 = QS_TOMEGIVEN;
       quests[Q_MUSHROOM]._qactive = QUEST_ACTIVE;
-      CreateItem(IDI_SPECELIX, plr[p]._px, plr[p]._py + 1);
+      SpawnQuestItem(IDI_SPECELIX, plr[p]._px, plr[p]._py + 1, 0, 0);
       towner[t]._tbtcnt = 150;
       towner[t]._tVar1 = p;
       InitQTextMsg(TEXT_MUSH12);
