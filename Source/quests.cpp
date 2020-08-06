@@ -167,13 +167,14 @@ void CheckQuests()
     }
 
     // Get reward for ltbanner
-    if (quests[Q_LTBANNER]._qvar2 == 1 &&
-        PlrHasItem(p, IDI_BANNER, &i) != NULL) {
+    if (PlrHasItem(p, IDI_BANNER, &i) != NULL) {
       t = GetActiveTowner(TOWN_TAVERN);
       quests[Q_LTBANNER]._qactive = QUEST_DONE;
       quests[Q_LTBANNER]._qvar1 = 3;
       RemoveInvItem(p, i);
       CreateItem(UITEM_HARCREST, plr[p]._px, plr[p]._py + 1);
+      ObjChangeMap(setpc_x, setpc_y, setpc_x + setpc_w + 1, setpc_y + setpc_h + 1);
+      RedoPlayerVision();
       towner[t]._tbtcnt = 150;
       towner[t]._tVar1 = p;
       InitQTextMsg(TEXT_BANNER3);
@@ -243,6 +244,14 @@ void CheckQuests()
       InitQTextMsg(TEXT_POISON5);
       CreateItem(UITEM_TRING, plr[p]._px, plr[p]._py + 1);
       towner[t]._tMsgSaid = TRUE;
+    }
+
+    // Lachdanan
+    if (PlrHasItem(p, IDI_GLDNELIX, &i) != NULL){
+      RemoveInvItem(p, i);
+      SpawnUnique(UITEM_STEELVEIL, plr[p]._px, plr[p]._py + 1);
+      quests[Q_VEIL]._qactive = QUEST_DONE;
+      InitQTextMsg(TEXT_VEIL11); // testing, might crash..
     }
   }
 
