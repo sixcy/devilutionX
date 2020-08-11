@@ -14,6 +14,7 @@ extern "C" {
 
 void gamemenu_on();
 void gamemenu_update_single(TMenuItem *pMenuItems);
+void gamemenu_update_single_IM(TMenuItem *pMenuItems);
 void gamemenu_update_multi(TMenuItem *pMenuItems);
 void gamemenu_off();
 void gamemenu_handle_previous();
@@ -22,6 +23,7 @@ void gamemenu_new_game(BOOL bActivate);
 void gamemenu_quit_game(BOOL bActivate);
 void gamemenu_load_game(BOOL bActivate);
 void gamemenu_save_game(BOOL bActivate);
+void gamemenu_save_quit_game(BOOL bActivate);
 void gamemenu_restart_town(BOOL bActivate);
 void gamemenu_options(BOOL bActivate);
 void gamemenu_get_music();

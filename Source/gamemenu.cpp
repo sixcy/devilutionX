@@ -19,6 +19,16 @@ TMenuItem sgSingleMenu[] = {
 	{ GMENU_ENABLED, NULL,           NULL }
 	// clang-format on
 };
+
+/** Same as above, for Ironman. */
+TMenuItem sgSingleMenuIM[] = {
+	// clang-format off
+	// dwFlags,      pszStr,         fnMenu
+	{ GMENU_ENABLED, "Save and Quit", &gamemenu_save_quit_game  },
+	{ GMENU_ENABLED, "Options",       &gamemenu_options         },
+	{ GMENU_ENABLED, NULL,            NULL }
+	// clang-format on
+};
 /** Contains the game menu items of the multi player menu. */
 TMenuItem sgMultiMenu[] = {
 	// clang-format off
@@ -57,7 +67,10 @@ char *color_cycling_toggle_names[] = { "Color Cycling Off", "Color Cycling On" }
 void gamemenu_on()
 {
 	if (gbMaxPlayers == 1) {
-		gmenu_set_items(sgSingleMenu, gamemenu_update_single);
+		if (gbIronman == TRUE)
+			gmenu_set_items(sgSingleMenuIM, gamemenu_update_single_IM);
+		else
+			gmenu_set_items(sgSingleMenu, gamemenu_update_single);
 	} else {
 		gmenu_set_items(sgMultiMenu, gamemenu_update_multi);
 	}
@@ -75,6 +88,17 @@ void gamemenu_update_single(TMenuItem *pMenuItems)
 		enable = TRUE;
 
 	gmenu_enable(&sgSingleMenu[0], enable);
+}
+
+void gamemenu_update_single_IM(TMenuItem *pMenuItems)
+{
+	BOOL enable;
+
+	enable = FALSE;
+	if (plr[myplr]._pmode != PM_DEATH && !deathflag)
+		enable = TRUE;
+
+	gmenu_enable(&sgSingleMenuIM[0], enable);
 }
 
 void gamemenu_update_multi(TMenuItem *pMenuItems)
@@ -165,6 +189,12 @@ void gamemenu_save_game(BOOL bActivate)
 	SetCursor_(CURSOR_HAND);
 	interface_msg_pump();
 	SetWindowProc(saveProc);
+}
+
+void gamemenu_save_quit_game(BOOL bActivate)
+{
+	gamemenu_save_game(bActivate);
+	gamemenu_new_game(bActivate);
 }
 
 void gamemenu_restart_town(BOOL bActivate)
