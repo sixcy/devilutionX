@@ -461,7 +461,11 @@ void selIronmanSelect(int val){
   selironman_endMenu = true;
 }
 
-void selIronmanEsc(void){}
+void selIronmanEsc(void){
+	UiInitList(0, 0, NULL, NULL, NULL, NULL, 0);
+	selironman_endMenu = true;
+	selhero_result = SELHERO_PREVIOUS;
+}
 
 void UiSelIronmanDialog(void){
   strcpy(title, "Choose challenge");
@@ -488,9 +492,15 @@ BOOL UiSelHeroSingDialog(
     char *name,
     int *difficulty)
 {
+  selhero_result = *dlgresult;
 	selhero_isMultiPlayer = false;
   UiSelIronmanDialog(); // choosing Ironman or not
-	return UiSelHeroDialog(fninfo, fncreate, fnstats, fnremove, dlgresult, name);
+  if (selhero_result == SELHERO_PREVIOUS){
+    *dlgresult = selhero_result;
+    return true;
+  }
+  else
+    return UiSelHeroDialog(fninfo, fncreate, fnstats, fnremove, dlgresult, name);
 }
 
 BOOL UiSelHeroMultDialog(
