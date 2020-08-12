@@ -320,6 +320,7 @@ BOOL ForceTownTrig()
 }
 
 #define IM_NOGOINGUP_STR "Ironman\nGoing up is forbidden!"
+#define IM_NOGOINGDOWN_STR "All monsters must be killed"
 
 BOOL ForceL1Trig()
 {
@@ -347,7 +348,10 @@ BOOL ForceL1Trig()
 
 	for (i = 0; L1DownList[i] != -1; i++) {
 		if (dPiece[cursmx][cursmy] == L1DownList[i]) {
-			sprintf(infostr, "Down to level %i", currlevel + 1);
+      if (gbIronman == TRUE && nummonsters > NB_GOLEMS)
+        strcpy(infostr, IM_NOGOINGDOWN_STR);
+      else
+        sprintf(infostr, "Down to level %i", currlevel + 1);
 			for (j = 0; j < numtrigs; j++) {
 				if (trigs[j]._tmsg == WM_DIABNEXTLVL) {
 					cursmx = trigs[j]._tx;
@@ -387,7 +391,10 @@ BOOL ForceL2Trig()
 
 	for (i = 0; L2DownList[i] != -1; i++) {
 		if (dPiece[cursmx][cursmy] == L2DownList[i]) {
-			sprintf(infostr, "Down to level %i", currlevel + 1);
+      if (gbIronman == TRUE && nummonsters > NB_GOLEMS)
+        strcpy(infostr, IM_NOGOINGDOWN_STR);
+      else
+        sprintf(infostr, "Down to level %i", currlevel + 1);
 			for (j = 0; j < numtrigs; j++) {
 				if (trigs[j]._tmsg == WM_DIABNEXTLVL) {
 					cursmx = trigs[j]._tx;
@@ -447,7 +454,10 @@ BOOL ForceL3Trig()
 		if (dPiece[cursmx][cursmy] == L3DownList[i]
 		    || dPiece[cursmx + 1][cursmy] == L3DownList[i]
 		    || dPiece[cursmx + 2][cursmy] == L3DownList[i]) {
-			sprintf(infostr, "Down to level %i", currlevel + 1);
+      if (gbIronman == TRUE && nummonsters > NB_GOLEMS)
+        strcpy(infostr, IM_NOGOINGDOWN_STR);
+      else
+        sprintf(infostr, "Down to level %i", currlevel + 1);
 			for (j = 0; j < numtrigs; j++) {
 				if (trigs[j]._tmsg == WM_DIABNEXTLVL) {
 					cursmx = trigs[j]._tx;
@@ -505,7 +515,10 @@ BOOL ForceL4Trig()
 
 	for (i = 0; L4DownList[i] != -1; i++) {
 		if (dPiece[cursmx][cursmy] == L4DownList[i]) {
-			sprintf(infostr, "Down to level %i", currlevel + 1);
+      if (gbIronman == TRUE && nummonsters > NB_GOLEMS)
+        strcpy(infostr, IM_NOGOINGDOWN_STR);
+      else
+        sprintf(infostr, "Down to level %i", currlevel + 1);
 			for (j = 0; j < numtrigs; j++) {
 				if (trigs[j]._tmsg == WM_DIABNEXTLVL) {
 					cursmx = trigs[j]._tx;
@@ -595,7 +608,10 @@ BOOL ForceSChambTrig()
 
 	for (i = 0; L2DownList[i] != -1; i++) {
 		if (dPiece[cursmx][cursmy] == L2DownList[i]) {
-			sprintf(infostr, "Back to Level %i", quests[Q_SCHAMB]._qlevel);
+      if (gbIronman == TRUE && nummonsters > NB_GOLEMS)
+        strcpy(infostr, IM_NOGOINGDOWN_STR);
+      else
+        sprintf(infostr, "Back to Level %i", quests[Q_SCHAMB]._qlevel);
 			cursmx = trigs[0]._tx;
 			cursmy = trigs[0]._ty;
 
@@ -612,7 +628,10 @@ BOOL ForcePWaterTrig()
 
 	for (i = 0; L3DownList[i] != -1; i++) {
 		if (dPiece[cursmx][cursmy] == L3DownList[i]) {
-			sprintf(infostr, "Back to Level %i", quests[Q_PWATER]._qlevel);
+      if (gbIronman == TRUE && nummonsters > NB_GOLEMS)
+        strcpy(infostr, IM_NOGOINGDOWN_STR);
+      else
+        sprintf(infostr, "Back to Level %i", quests[Q_PWATER]._qlevel);
 			cursmx = trigs[0]._tx;
 			cursmy = trigs[0]._ty;
 
